@@ -13,13 +13,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/films")
 @Slf4j
-public class FilmController {
+public class FilmController extends Controller<Film> {
 
     private Map<Integer, Film> films = new HashMap();
 
+    @Override
     @PostMapping
-    public Film saveFilm(@Valid @RequestBody Film film) throws Validation {
-
+    public Film save(@Valid @RequestBody Film film) throws Validation {
         validateReleaseDate(film);
         film.setId(Film.counter++);
         films.put(film.getId(), film);
@@ -27,18 +27,26 @@ public class FilmController {
         return film;
     }
 
+    @Override
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws Validation {
-
+    public Film update(@Valid @RequestBody Film film) throws Validation {
         validateReleaseDate(film);
         films.put(film.getId(), film);
         log.debug("film updated: {}", film);
         return film;
     }
 
+    @Override
     @GetMapping
     public Map<Integer, Film> findAll() {
         return films;
+    }
+
+    @Override
+    @DeleteMapping
+    public void deleteAll() {
+        films.clear();
+        Film.counter = 0;
     }
 
     public void validateReleaseDate(Film film) throws Validation {

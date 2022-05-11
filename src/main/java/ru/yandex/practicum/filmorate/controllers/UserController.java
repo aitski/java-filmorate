@@ -13,12 +13,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 @Slf4j
-public class UserController {
+public class UserController extends Controller<User> {
 
     private final Map<Integer, User> users = new HashMap();
 
+    @Override
     @PostMapping
-    public User saveUser(@Valid @RequestBody User user) throws Validation {
+    public User save(@Valid @RequestBody User user) throws Validation {
 
         validateBirthday(user);
         validateLogin(user);
@@ -29,8 +30,9 @@ public class UserController {
         return user;
     }
 
+    @Override
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws Validation {
+    public User update(@Valid @RequestBody User user) throws Validation {
 
         validateBirthday(user);
         validateLogin(user);
@@ -40,10 +42,19 @@ public class UserController {
         return user;
     }
 
+    @Override
     @GetMapping
     public Map<Integer, User> findAll() {
         return users;
     }
+
+    @Override
+    @DeleteMapping
+    public void deleteAll() {
+        users.clear();
+        User.counter = 0;
+    }
+
 
     public void validateName(User user) {
 
@@ -62,9 +73,10 @@ public class UserController {
             throw v;
         }
     }
+
     public void validateLogin(User user) throws Validation {
 
-        if (user.getLogin().contains(" ")){
+        if (user.getLogin().contains(" ")) {
             Validation v = new Validation("check login");
             log.debug(v.getMessage());
             throw v;
