@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -15,6 +17,11 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap();
+
+    @Override
+    public Map<Long, Film> getFilms() {
+        return films;
+    }
 
     @Override
     public Film save(Film film) {
@@ -48,8 +55,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Map<Long, Film> findAll() {
-        return films;
+    public List<Film> findAll() {
+        return new ArrayList<>(films.values());
     }
 
     public void validateReleaseDate(Film film) {

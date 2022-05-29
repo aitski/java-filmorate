@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -47,7 +46,7 @@ public class UserController extends Controller<User> {
 
     @Override
     @GetMapping
-    public Map<Long, User> findAll() {
+    public List<User> findAll() {
         return userStorage.findAll();
     }
 

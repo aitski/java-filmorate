@@ -41,7 +41,7 @@ public class FilmControllerGetTests {
                 ("http://localhost:" + port + "/films/10",String.class);
 
         //check get all films
-        assertEquals("{\"1\":{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2},\"2\":{\"id\":2,\"likes\":[],\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1}}", mapFromServer);
+        assertEquals("[{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2},{\"id\":2,\"likes\":[],\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1}]", mapFromServer);
         //check get film by id
         assertEquals("{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2}", filmFromServer);
         //check get film by not existing id

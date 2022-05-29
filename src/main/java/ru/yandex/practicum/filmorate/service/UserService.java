@@ -43,7 +43,7 @@ public class UserService {
         Set<Long> friendsSet = getFriendsSet(userId);
         List<User> friends = new ArrayList<>();
         for (Long id : friendsSet) {
-            friends.add(userStorage.findAll().get(id));
+            friends.add(userStorage.getUsers().get(id));
         }
         return friends;
     }
@@ -58,7 +58,7 @@ public class UserService {
 
         for (Long id : userSet) {
             if (otherSet.contains(id)) {
-                commonFriends.add(userStorage.findAll().get(id));
+                commonFriends.add(userStorage.getUsers().get(id));
             }
         }
         return commonFriends;
@@ -66,17 +66,17 @@ public class UserService {
 
     public User getById(Long id) {
         validateId(id);
-        return userStorage.findAll().get(id);
+        return userStorage.getUsers().get(id);
     }
 
     public Set<Long> getFriendsSet(Long userId) {
 
-        User user = userStorage.findAll().get(userId);
+        User user = userStorage.getUsers().get(userId);
         return user.getFriends();
     }
 
-    public void validateId (Long id){
-        if(!userStorage.findAll().containsKey(id)){
+    public void validateId(Long id) {
+        if (!userStorage.getUsers().containsKey(id)) {
             ObjectNotFoundException v = new ObjectNotFoundException("user does not exist in database");
             log.debug(v.getMessage());
             throw v;

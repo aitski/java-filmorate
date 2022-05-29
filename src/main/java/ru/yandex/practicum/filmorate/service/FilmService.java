@@ -37,41 +37,42 @@ public class FilmService {
 
     public List<Film> getPopularFilms(Integer count) {
 
-        if (filmStorage.findAll().isEmpty()) {
+        if (filmStorage.getFilms().isEmpty()) {
             ObjectNotFoundException v = new ObjectNotFoundException("no films in database");
             log.debug(v.getMessage());
             throw v;
         }
 
-        return filmStorage.findAll().values().stream().sorted(
-                        (p0, p1)-> Integer.compare((p0.getLikes().size()), p1.getLikes().size()) *-1)
+        return filmStorage.findAll().stream().sorted(
+                        (p0, p1) -> Integer.compare((p0.getLikes().size()), p1.getLikes().size()) * -1)
                 .limit(count).collect(Collectors.toList());
     }
+
     public Film getById(Long id) {
 
-        if (!filmStorage.findAll().containsKey(id)) {
+        if (!filmStorage.getFilms().containsKey(id)) {
             ObjectNotFoundException v = new ObjectNotFoundException("film does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }
-        return filmStorage.findAll().get(id);
+        return filmStorage.getFilms().get(id);
     }
 
     public Set<Long> getLikesSet(Long filmId, Long userId) {
 
-        if (!filmStorage.findAll().containsKey(filmId)) {
+        if (!filmStorage.getFilms().containsKey(filmId)) {
             ObjectNotFoundException v = new ObjectNotFoundException("film does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }
 
-        if (!userStorage.findAll().containsKey(userId)) {
+        if (!userStorage.getUsers().containsKey(userId)) {
             ObjectNotFoundException v = new ObjectNotFoundException("user does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }
 
-        Film film = filmStorage.findAll().get(filmId);
+        Film film = filmStorage.getFilms().get(filmId);
         return film.getLikes();
     }
 

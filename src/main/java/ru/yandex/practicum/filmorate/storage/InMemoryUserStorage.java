@@ -8,7 +8,9 @@ import ru.yandex.practicum.filmorate.exceptions.Validation;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -16,6 +18,11 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage{
 
     private final Map<Long, User> users = new HashMap();
+
+    @Override
+    public Map<Long, User> getUsers() {
+        return users;
+    }
 
     @Override
         public User save(User user) {
@@ -53,8 +60,8 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public Map<Long, User> findAll() {
-        return users;
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
     }
 
     public void validateName(User user) {

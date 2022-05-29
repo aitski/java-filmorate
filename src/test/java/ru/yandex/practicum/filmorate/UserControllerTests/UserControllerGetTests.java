@@ -45,8 +45,7 @@ public class UserControllerGetTests {
                 ("http://localhost:" + port + "/users/10",String.class);
 
         //check get all users
-        assertEquals("{\"1\":{\"id\":1,\"friends\":[],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}," +
-                        "\"2\":{\"id\":2,\"friends\":[],\"email\":\"user2@mail.ru\",\"login\":\"user2\",\"name\":\"User2\",\"birthday\":\"1985-05-11\"}}",
+        assertEquals("[{\"id\":1,\"friends\":[],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"},{\"id\":2,\"friends\":[],\"email\":\"user2@mail.ru\",\"login\":\"user2\",\"name\":\"User2\",\"birthday\":\"1985-05-11\"}]",
                 mapFromServer);
         //check get user by id
         assertEquals("{\"id\":1,\"friends\":[],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}",

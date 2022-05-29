@@ -39,7 +39,7 @@ public class FilmControllerPutTests {
         String mapFromServer = restTemplate.getForObject
                 ("http://localhost:" + port + "/films",String.class);
 
-        assertEquals("{\"1\":{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3}}",
+        assertEquals("[{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3}]",
                 mapFromServer);
     }
     }

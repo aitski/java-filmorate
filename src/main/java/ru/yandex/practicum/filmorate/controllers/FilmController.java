@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -48,7 +47,7 @@ public class FilmController extends Controller<Film> {
 
     @Override
     @GetMapping
-    public Map<Long, Film> findAll() {
+    public List<Film> findAll() {
         return filmStorage.findAll();
     }
 
