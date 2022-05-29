@@ -1,85 +1,79 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.Validation;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
-@Slf4j
+
 public class UserController extends Controller<User> {
 
-    private final Map<Integer, User> users = new HashMap();
+    private final UserStorage userStorage;
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
 
     @Override
     @PostMapping
-    public User save(@Valid @RequestBody User user) throws Validation {
+    public User save(@Valid @RequestBody User user) {
 
-        validateBirthday(user);
-        validateLogin(user);
-        validateName(user);
-        user.setId(User.counter++);
-        users.put(user.getId(), user);
-        log.debug("new user created: {}", user);
-        return user;
+        return userStorage.save(user);
     }
 
     @Override
     @PutMapping
-    public User update(@Valid @RequestBody User user) throws Validation {
+    public User update(@Valid @RequestBody User user) {
 
-        validateBirthday(user);
-        validateLogin(user);
-        validateName(user);
-        users.put(user.getId(), user);
-        log.debug("user updated: {}", user);
-        return user;
-    }
-
-    @Override
-    @GetMapping
-    public Map<Integer, User> findAll() {
-        return users;
+        return userStorage.update(user);
     }
 
     @Override
     @DeleteMapping
     public void deleteAll() {
-        users.clear();
-        User.counter = 0;
+        userStorage.deleteAll();
+
     }
 
-
-    public void validateName(User user) {
-
-        if (user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.debug("user blank name was replaced with login: {}", user.getName());
-        }
+    @Override
+    @GetMapping
+    public Map<Long, User> findAll() {
+        return userStorage.findAll();
     }
 
-    public void validateBirthday(User user) throws Validation {
-        LocalDate birthday = LocalDate.parse(user.getBirthday());
-
-        if (birthday.isAfter(LocalDate.now())) {
-            Validation v = new Validation("check birthday");
-            log.debug(v.getMessage());
-            throw v;
-        }
+    @GetMapping("/{userId}")
+    public User getById(@PathVariable Long userId) {
+        return userService.getById(userId);
     }
 
-    public void validateLogin(User user) throws Validation {
-
-        if (user.getLogin().contains(" ")) {
-            Validation v = new Validation("check login");
-            log.debug(v.getMessage());
-            throw v;
-        }
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        userService.addFriend(userId, friendId);
     }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        userService.deleteFriend(userId, friendId);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public List<User> getFriendsList(@PathVariable Long userId) {
+        return userService.getFriendsList(userId);
+    }
+
+    @GetMapping("/{userId}/friends/common/{otherId}")
+    public List<User> getFriendsList(@PathVariable Long userId, @PathVariable Long otherId) {
+        return userService.getCommonFriendsList(userId, otherId);
+    }
+
 }

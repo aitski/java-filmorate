@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,22 +24,28 @@ public class FilmControllerGetTests {
     @Test
     public void getFilmTest() {
 
-        Film Film1 = new Film
-                ("Film1", "about 1", "1985-05-11", 2);
-        Film Film2 = new Film
-                ("Film2", "about 2", "2020-01-01", 1);
+        Film film1 = new Film("Film1", "about 1", "1985-05-11", 2);
+        Film film2 = new Film("Film2", "about 2", "2020-01-01", 1);
 
-        HttpEntity<Film> request1 = new HttpEntity<>(Film1);
-        HttpEntity<Film> request2 = new HttpEntity<>(Film2);
+        HttpEntity<Film> request1 = new HttpEntity<>(film1);
+        HttpEntity<Film> request2 = new HttpEntity<>(film2);
+
         //clearing map from previous tests
         restTemplate.delete("http://localhost:" + port + "/films");
         restTemplate.postForLocation("http://localhost:" + port + "/films", request1);
         restTemplate.postForLocation("http://localhost:" + port + "/films", request2);
 
-        String mapFromServer = restTemplate.getForObject
-                ("http://localhost:" + port + "/films", String.class);
+        String mapFromServer = restTemplate.getForObject("http://localhost:" + port + "/films", String.class);
+        String filmFromServer = restTemplate.getForObject("http://localhost:" + port + "/films/1", String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity
+                ("http://localhost:" + port + "/films/10",String.class);
 
-        assertEquals("{\"0\":{\"id\":0,\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2},\"1\":{\"id\":1,\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1}}",
-                mapFromServer);
+        //check get all films
+        assertEquals("{\"1\":{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2},\"2\":{\"id\":2,\"likes\":[],\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1}}", mapFromServer);
+        //check get film by id
+        assertEquals("{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2}", filmFromServer);
+        //check get film by not existing id
+        assertEquals("404 NOT_FOUND",responseEntity.getStatusCode().toString());
+
     }
 }

@@ -39,9 +39,20 @@ public class UserControllerGetTests {
 
         String mapFromServer = restTemplate.getForObject
                 ("http://localhost:" + port + "/users", String.class);
+        String userFromServer = restTemplate.getForObject
+                ("http://localhost:" + port + "/users/1", String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity
+                ("http://localhost:" + port + "/users/10",String.class);
 
-        assertEquals("{\"0\":{\"id\":0,\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}," +
-                        "\"1\":{\"id\":1,\"email\":\"user2@mail.ru\",\"login\":\"user2\",\"name\":\"User2\",\"birthday\":\"1985-05-11\"}}",
+        //check get all users
+        assertEquals("{\"1\":{\"id\":1,\"friends\":[],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}," +
+                        "\"2\":{\"id\":2,\"friends\":[],\"email\":\"user2@mail.ru\",\"login\":\"user2\",\"name\":\"User2\",\"birthday\":\"1985-05-11\"}}",
                 mapFromServer);
+        //check get user by id
+        assertEquals("{\"id\":1,\"friends\":[],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}",
+                userFromServer);
+        //check get user by not existing id
+        assertEquals("404 NOT_FOUND",responseEntity.getStatusCode().toString());
+
     }
 }

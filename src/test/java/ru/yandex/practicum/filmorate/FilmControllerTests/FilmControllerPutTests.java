@@ -23,20 +23,23 @@ public class FilmControllerPutTests {
     @Test
     public void updateFilmTest() {
 
+        restTemplate.delete("http://localhost:" + port + "/films");
         Film film = new Film
                 ("Film1", "about 1", "1985-05-11", 2);
         HttpEntity<Film> request = new HttpEntity<>(film);
         //clearing map from previous tests
-        restTemplate.delete("http://localhost:" + port + "/films");
         restTemplate.postForLocation("http://localhost:" + port + "/films",request);
 
         film.setDuration(3);
+        film.setId(1);
 
-        restTemplate.put("http://localhost:" + port + "/films", request);
+        HttpEntity<Film> request2 = new HttpEntity<>(film);
+
+        restTemplate.put("http://localhost:" + port + "/films", request2);
         String mapFromServer = restTemplate.getForObject
                 ("http://localhost:" + port + "/films",String.class);
 
-        assertEquals("{\"0\":{\"id\":0,\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3}}",
+        assertEquals("{\"1\":{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3}}",
                 mapFromServer);
     }
     }
