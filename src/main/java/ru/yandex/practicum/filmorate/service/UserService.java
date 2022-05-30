@@ -20,6 +20,20 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+    public User save(User user){
+        return userStorage.save(user);
+    }
+
+    public void deleteAll(){
+        userStorage.deleteAll();
+    }
+    public User update(User user){
+        return userStorage.update(user);
+    }
+    public List<User> findAll(){
+        return userStorage.findAll();
+    }
+
     public void addFriend(Long userId, Long friendId) {
         validateId(userId);
         validateId(friendId);

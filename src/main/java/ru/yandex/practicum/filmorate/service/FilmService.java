@@ -24,6 +24,20 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
+    public  Film save(Film film){
+        return filmStorage.save(film);
+    }
+
+    public void deleteAll(){
+      filmStorage.deleteAll();
+    }
+    public Film update(Film film){
+        return filmStorage.update(film);
+    }
+    public List<Film> findAll(){
+        return filmStorage.findAll();
+    }
+
     public void addLike(Long filmId, Long userId) {
 
         getLikesSet(filmId, userId).add(userId);

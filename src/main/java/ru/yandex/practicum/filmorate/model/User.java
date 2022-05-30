@@ -6,7 +6,11 @@ import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+
 public class User {
 
     public static long counter=1;
