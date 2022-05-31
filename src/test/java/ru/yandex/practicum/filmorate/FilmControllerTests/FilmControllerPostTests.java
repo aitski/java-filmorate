@@ -69,7 +69,7 @@ public class FilmControllerPostTests {
         HttpEntity<Film> request = new HttpEntity<>(film);
         ResponseEntity<Film> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/films", request, Film.class);
-        assertEquals("500 INTERNAL_SERVER_ERROR",responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST",responseEntity.getStatusCode().toString());
     }
 
     @Test

@@ -57,7 +57,7 @@ public class UserControllerPostTests {
         HttpEntity<User> request = new HttpEntity<>(user);
         ResponseEntity<User> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/users",request,User.class);
-        assertEquals("500 INTERNAL_SERVER_ERROR",responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST",responseEntity.getStatusCode().toString());
     }
 
     @Test
@@ -80,6 +80,6 @@ public class UserControllerPostTests {
         HttpEntity<User> request = new HttpEntity<>(user);
         ResponseEntity<User> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/users",request,User.class);
-        assertEquals("500 INTERNAL_SERVER_ERROR",responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST",responseEntity.getStatusCode().toString());
     }
     }

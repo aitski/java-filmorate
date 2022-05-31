@@ -3,15 +3,19 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 import javax.validation.constraints.*;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+
 public class User {
 
-    public static int counter;
-    private int id;
+    public static long counter=1;
+    private long id;
+    private Set<Long> friends = new HashSet<>();
     @NotBlank
     @Email
     private  String email;
