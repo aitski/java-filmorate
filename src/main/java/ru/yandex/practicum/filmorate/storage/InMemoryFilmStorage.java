@@ -24,12 +24,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film save(Film film) {
+    public void save(Film film) {
         validateReleaseDate(film);
         film.setId(Film.counter++);
         films.put(film.getId(), film);
         log.debug("new film created: {}", film);
-        return film;
     }
 
     @Override

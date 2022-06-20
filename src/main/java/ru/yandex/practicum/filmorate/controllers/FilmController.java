@@ -24,9 +24,9 @@ public class FilmController extends Controller<Film> {
 
     @Override
     @PostMapping
-    public Film save(@Valid @RequestBody Film film) {
+    public void save(@Valid @RequestBody Film film) {
 
-        return filmService.save(film);
+        filmService.save(film);
 
     }
 

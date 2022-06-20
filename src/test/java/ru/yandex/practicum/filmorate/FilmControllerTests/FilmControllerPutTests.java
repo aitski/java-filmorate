@@ -25,7 +25,7 @@ public class FilmControllerPutTests {
 
         restTemplate.delete("http://localhost:" + port + "/films");
         Film film = new Film
-                ("Film1", "about 1", "1985-05-11", 2);
+                ("Film1", "about 1", "1985-05-11", 2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         //clearing map from previous tests
         restTemplate.postForLocation("http://localhost:" + port + "/films",request);
@@ -39,7 +39,7 @@ public class FilmControllerPutTests {
         String mapFromServer = restTemplate.getForObject
                 ("http://localhost:" + port + "/films",String.class);
 
-        assertEquals("[{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3}]",
+        assertEquals("[{\"id\":1,\"likes\":[],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":3,\"genre\":null,\"mpa\":null}]",
                 mapFromServer);
     }
     }

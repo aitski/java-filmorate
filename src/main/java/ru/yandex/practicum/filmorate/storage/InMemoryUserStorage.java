@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.Validation;
+import ru.yandex.practicum.filmorate.model.Status;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -20,12 +21,24 @@ public class InMemoryUserStorage implements UserStorage{
     private final Map<Long, User> users = new HashMap();
 
     @Override
-    public Map<Long, User> getUsers() {
-        return users;
+    public User getById(Long id) {
+        validateId(id);
+        return users.get(id);
     }
 
     @Override
-        public User save(User user) {
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
+    }
+
+    public Map<Long, Status> getFriendsMap(Long userId) {
+
+        User user = users.get(userId);
+        return user.getFriends();
+    }
+
+    @Override
+        public void save(User user) {
 
         validateBirthday(user);
         validateLogin(user);
@@ -33,7 +46,6 @@ public class InMemoryUserStorage implements UserStorage{
         user.setId(User.counter++);
         users.put(user.getId(), user);
         log.debug("new user created: {}", user);
-        return user;
     }
 
     @Override
@@ -60,8 +72,48 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public List<User> findAll() {
-        return new ArrayList<>(users.values());
+    public void addFriend(Long userId, Long friendId) {
+        validateId(userId);
+        validateId(friendId);
+        //add to friend one-sided
+        getFriendsMap(friendId).put(userId,Status.PENDING);
+        log.debug("user {} added {} to friends", userId, friendId);
+    }
+
+    @Override
+    public void deleteFriend(Long userId, Long friendId) {
+        validateId(userId);
+        validateId(friendId);
+        getFriendsMap(friendId).remove(userId);
+        log.debug("user {} deleted {} from friends", userId, friendId);
+
+    }
+
+    @Override
+    public List<User> getFriendsList(Long userId) {
+        validateId(userId);
+        Map<Long,Status> friendsMap = getFriendsMap(userId);
+        List<User> friends = new ArrayList<>();
+        for (Long id : friendsMap.keySet()) {
+            friends.add(users.get(id));
+        }
+        return friends;
+    }
+
+    @Override
+    public List<User> getCommonFriendsList(Long userId, Long otherId) {
+        List<User> commonFriends = new ArrayList<>();
+        validateId(userId);
+        validateId(otherId);
+        Map<Long,Status> userSet = getFriendsMap(userId);
+        Map<Long,Status> otherSet = getFriendsMap(otherId);
+
+        for (Long id : userSet.keySet()) {
+            if (otherSet.containsKey(id)) {
+                commonFriends.add(users.get(id));
+            }
+        }
+        return commonFriends;
     }
 
     public void validateName(User user) {
@@ -86,6 +138,14 @@ public class InMemoryUserStorage implements UserStorage{
 
         if (user.getLogin().contains(" ")) {
             Validation v = new Validation("login contains spaces");
+            log.debug(v.getMessage());
+            throw v;
+        }
+    }
+
+    public void validateId(Long id) {
+        if (!users.containsKey(id)) {
+            ObjectNotFoundException v = new ObjectNotFoundException("user does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }

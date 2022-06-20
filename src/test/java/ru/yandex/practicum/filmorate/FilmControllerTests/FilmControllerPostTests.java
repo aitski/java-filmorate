@@ -26,7 +26,7 @@ public class FilmControllerPostTests {
     public void createFilmTest() {
 
         Film film = new Film
-                ("Film1", "about 1", "1985-05-11", 2);
+                ("Film1", "about 1", "1985-05-11", 2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         //clearing map from previous tests
         restTemplate.delete("http://localhost:" + port + "/films");
@@ -42,7 +42,7 @@ public class FilmControllerPostTests {
     public void blankFilmNameTest() {
 
         Film film = new Film
-                ("", "about 1", "1985-05-11", 2);
+                ("", "about 1", "1985-05-11", 2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         ResponseEntity<Film> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/films",request,Film.class);
@@ -54,7 +54,7 @@ public class FilmControllerPostTests {
 
         Film film = new Film
                 ("Film1", "abouttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt",
-                        "1985-05-11", 2);
+                        "1985-05-11", 2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         ResponseEntity<Film> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/films",request,Film.class);
@@ -65,7 +65,7 @@ public class FilmControllerPostTests {
     public void tooOldReleaseDateTest() {
 
         Film film = new Film
-                ("Film1", "about 1", "1565-05-11", 2);
+                ("Film1", "about 1", "1565-05-11", 2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         ResponseEntity<Film> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/films", request, Film.class);
@@ -76,7 +76,7 @@ public class FilmControllerPostTests {
     public void negativeDurationTest() {
 
         Film film = new Film
-                ("Film1", "about 1", "1565-05-11", -2);
+                ("Film1", "about 1", "1565-05-11", -2,null, null);
         HttpEntity<Film> request = new HttpEntity<>(film);
         ResponseEntity<Film> responseEntity = restTemplate.postForEntity
                 ("http://localhost:" + port + "/films",request,Film.class);

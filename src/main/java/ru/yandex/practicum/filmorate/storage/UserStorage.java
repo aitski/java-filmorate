@@ -9,9 +9,14 @@ import java.util.Map;
 
 public interface UserStorage {
     
-    User save(User user) ;
+    void save(User user) ;
     void deleteAll() ;
     User update(User user) ;
     List<User> findAll();
-    Map<Long, User> getUsers();
+    User getById (Long id);
+    void addFriend (Long userId, Long friendId);
+    void deleteFriend(Long userId, Long friendId);
+    List<User> getFriendsList(Long userId);
+    List<User> getCommonFriendsList(Long userId, Long otherId);
+
 }

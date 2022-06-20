@@ -9,7 +9,7 @@ public abstract class Controller<T> {
 
 
     @PostMapping
-    public abstract T save(@RequestBody T t);
+    public abstract void save(@RequestBody T t);
 
     @PutMapping
     public abstract T update(@RequestBody T t);

@@ -25,16 +25,16 @@ public class FilmLikesTest {
     @Test
     public void testLikes() {
 
-        Film film0 = new Film("Film0", "about 0", "1985-05-11", 3);
-        Film film1 = new Film("Film1", "about 1", "1985-05-11", 2);
-        Film film2 = new Film("Film2", "about 2", "2020-01-01", 1);
+        Film film0 = new Film("Film0", "about 0", "1985-05-11", 3,null, null);
+        Film film1 = new Film("Film1", "about 1", "1985-05-11", 2,null, null);
+        Film film2 = new Film("Film2", "about 2", "2020-01-01", 1,null, null);
         User user0 = new User
                 ("user0@mail.ru", "user0", "User0", "1985-05-11");
         User user1 = new User
                 ("user1@mail.ru", "user1", "User1", "1985-05-11");
         User user2 = new User
                 ("user2@mail.ru", "user2", "User2", "1985-05-11");
-        Film film3 = new Film("Film3", "about 3", "2020-01-01", 1);
+        Film film3 = new Film("Film3", "about 3", "2020-01-01", 1,null, null);
 
         HttpEntity<Film> request0 = new HttpEntity<>(film0);
         HttpEntity<Film> request1 = new HttpEntity<>(film1);
@@ -67,12 +67,12 @@ public class FilmLikesTest {
         String listFromServer = restTemplate.getForObject(
                 "http://localhost:" + port + "/films/popular",String.class);
 
-        assertEquals("[{\"id\":2,\"likes\":[1,2,3],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2},{\"id\":3,\"likes\":[1,3],\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1},{\"id\":1,\"likes\":[1],\"name\":\"Film0\",\"description\":\"about 0\",\"releaseDate\":\"1985-05-11\",\"duration\":3},{\"id\":4,\"likes\":[],\"name\":\"Film3\",\"description\":\"about 3\",\"releaseDate\":\"2020-01-01\",\"duration\":1}]",listFromServer);
+        assertEquals("[{\"id\":2,\"likes\":[1,2,3],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2,\"genre\":null,\"mpa\":null},{\"id\":3,\"likes\":[1,3],\"name\":\"Film2\",\"description\":\"about 2\",\"releaseDate\":\"2020-01-01\",\"duration\":1,\"genre\":null,\"mpa\":null},{\"id\":1,\"likes\":[1],\"name\":\"Film0\",\"description\":\"about 0\",\"releaseDate\":\"1985-05-11\",\"duration\":3,\"genre\":null,\"mpa\":null},{\"id\":4,\"likes\":[],\"name\":\"Film3\",\"description\":\"about 3\",\"releaseDate\":\"2020-01-01\",\"duration\":1,\"genre\":null,\"mpa\":null}]",listFromServer);
 
         //delete 1 like
         restTemplate.delete("http://localhost:" + port + "/films/2/like/1");
         String filmFromServer = restTemplate.getForObject("http://localhost:" + port + "/films/2",String.class);
-        assertEquals("{\"id\":2,\"likes\":[2,3],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2}",filmFromServer);
+        assertEquals("{\"id\":2,\"likes\":[2,3],\"name\":\"Film1\",\"description\":\"about 1\",\"releaseDate\":\"1985-05-11\",\"duration\":2,\"genre\":null,\"mpa\":null}",filmFromServer);
 
         //add like to not existing film
         ResponseEntity<String> responseEntity = restTemplate.exchange(

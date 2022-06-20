@@ -22,9 +22,8 @@ public class UserController extends Controller<User> {
 
     @Override
     @PostMapping
-    public User save(@Valid @RequestBody User user) {
-
-        return userService.save(user);
+    public void save(@Valid @RequestBody User user) {
+        userService.save(user);
     }
 
     @Override

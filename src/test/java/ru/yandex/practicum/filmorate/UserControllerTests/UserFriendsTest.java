@@ -44,24 +44,24 @@ public class UserFriendsTest {
         restTemplate.postForLocation("http://localhost:" + port + "/users", request6);
 
         //adding friends
-        restTemplate.put("http://localhost:" + port + "/users/1/friends/2", null);
-        restTemplate.put("http://localhost:" + port + "/users/1/friends/3", null);
-        restTemplate.put("http://localhost:" + port + "/users/1/friends/4", null);
-        restTemplate.put("http://localhost:" + port + "/users/2/friends/4", null);
-        restTemplate.delete("http://localhost:" + port + "/users/1/friends/3");
+        restTemplate.put("http://localhost:" + port + "/users/2/friends/1", null);
+        restTemplate.put("http://localhost:" + port + "/users/3/friends/1", null);
+        restTemplate.put("http://localhost:" + port + "/users/4/friends/1", null);
+        restTemplate.put("http://localhost:" + port + "/users/4/friends/2", null);
+        restTemplate.delete("http://localhost:" + port + "/users/3/friends/1");
 
         //check add,delete friend and list of friends
         String friendsList = restTemplate.getForObject(
                 "http://localhost:" + port + "/users/1/friends", String.class);
         String friendsList2 = restTemplate.getForObject(
-                "http://localhost:" + port + "/users/4/friends", String.class);
+                "http://localhost:" + port + "/users/2/friends", String.class);
         //list of common friends
         String commonFriendsList = restTemplate.getForObject(
-                "http://localhost:" + port + "/users/1/friends/common/4", String.class);
+                "http://localhost:" + port + "/users/1/friends/common/2", String.class);
 
-        assertEquals("[{\"id\":2,\"friends\":[1,4],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"},{\"id\":4,\"friends\":[1,2],\"email\":\"user3@mail.ru\",\"login\":\"user3\",\"name\":\"User3\",\"birthday\":\"1985-05-11\"}]", friendsList);
-        assertEquals("[{\"id\":1,\"friends\":[2,4],\"email\":\"user0@mail.ru\",\"login\":\"user0\",\"name\":\"User0\",\"birthday\":\"1985-05-11\"},{\"id\":2,\"friends\":[1,4],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}]", friendsList2);
-        assertEquals("[{\"id\":2,\"friends\":[1,4],\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"}]", commonFriendsList);
+        assertEquals("[{\"id\":2,\"friends\":{\"4\":\"PENDING\"},\"email\":\"user1@mail.ru\",\"login\":\"user1\",\"name\":\"User1\",\"birthday\":\"1985-05-11\"},{\"id\":4,\"friends\":{},\"email\":\"user3@mail.ru\",\"login\":\"user3\",\"name\":\"User3\",\"birthday\":\"1985-05-11\"}]", friendsList);
+        assertEquals("[{\"id\":4,\"friends\":{},\"email\":\"user3@mail.ru\",\"login\":\"user3\",\"name\":\"User3\",\"birthday\":\"1985-05-11\"}]", friendsList2);
+        assertEquals("[{\"id\":4,\"friends\":{},\"email\":\"user3@mail.ru\",\"login\":\"user3\",\"name\":\"User3\",\"birthday\":\"1985-05-11\"}]", commonFriendsList);
 
     }
 }

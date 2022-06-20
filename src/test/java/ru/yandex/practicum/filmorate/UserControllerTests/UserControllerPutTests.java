@@ -41,7 +41,7 @@ public class UserControllerPutTests {
         String mapFromServer = restTemplate.getForObject
                 ("http://localhost:" + port + "/users",String.class);
 
-        assertEquals("[{\"id\":1,\"friends\":[],\"email\":\"newEmail@mail.ru\",\"login\":\"user\",\"name\":\"User\",\"birthday\":\"1985-05-11\"}]",
+        assertEquals("[{\"id\":1,\"friends\":{},\"email\":\"newEmail@mail.ru\",\"login\":\"user\",\"name\":\"User\",\"birthday\":\"1985-05-11\"}]",
                 mapFromServer);
 
     }
