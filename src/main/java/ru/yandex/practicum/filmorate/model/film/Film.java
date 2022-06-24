@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.*;
 
@@ -26,16 +26,18 @@ public class Film {
     private String releaseDate;
     @Positive
     private int duration;
-    private String genre;
-    private String mpa;
+    Set<Genres> genres;
+    @NonNull
+    Mpa mpa;
+    int rate;
 
 
-    public Film(String name, String description, String releaseDate, int duration, String genre, String mpa) {
+    public Film(String name, String description, String releaseDate, int duration, Mpa mpa, int rate) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.genre = genre;
         this.mpa = mpa;
+        this.rate = rate;
     }
 }

@@ -1,12 +1,13 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.inMemory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.Validation;
-import ru.yandex.practicum.filmorate.model.Status;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.Status;
+import ru.yandex.practicum.filmorate.model.user.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap();
 
@@ -38,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-        public void save(User user) {
+        public User save(User user) {
 
         validateBirthday(user);
         validateLogin(user);
@@ -46,6 +47,7 @@ public class InMemoryUserStorage implements UserStorage{
         user.setId(User.counter++);
         users.put(user.getId(), user);
         log.debug("new user created: {}", user);
+        return user;
     }
 
     @Override
@@ -62,13 +64,6 @@ public class InMemoryUserStorage implements UserStorage{
         users.put(user.getId(), user);
         log.debug("user updated: {}", user);
         return user;
-    }
-
-    @Override
-    public void deleteAll() {
-        users.clear();
-        User.counter=1;
-        log.debug("all users deleted");
     }
 
     @Override

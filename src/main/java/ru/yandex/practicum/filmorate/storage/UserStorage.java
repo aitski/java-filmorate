@@ -1,16 +1,12 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import ru.yandex.practicum.filmorate.exceptions.Validation;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserStorage {
     
-    void save(User user) ;
-    void deleteAll() ;
+    User save(User user) ;
     User update(User user) ;
     List<User> findAll();
     User getById (Long id);

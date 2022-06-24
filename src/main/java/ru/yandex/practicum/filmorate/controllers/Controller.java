@@ -9,13 +9,10 @@ public abstract class Controller<T> {
 
 
     @PostMapping
-    public abstract void save(@RequestBody T t);
+    public abstract T save(@RequestBody T t);
 
     @PutMapping
     public abstract T update(@RequestBody T t);
-
-    @DeleteMapping
-    public abstract void deleteAll();
 
     @GetMapping
     public abstract List<T> findAll();
