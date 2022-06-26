@@ -66,7 +66,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    @Override
+
     public void addFriend(Long userId, Long friendId) {
         validateId(userId);
         validateId(friendId);
@@ -75,7 +75,7 @@ public class InMemoryUserStorage implements UserStorage {
         log.debug("user {} added {} to friends", userId, friendId);
     }
 
-    @Override
+
     public void deleteFriend(Long userId, Long friendId) {
         validateId(userId);
         validateId(friendId);
@@ -84,7 +84,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     }
 
-    @Override
+
     public List<User> getFriendsList(Long userId) {
         validateId(userId);
         Map<Long,Status> friendsMap = getFriendsMap(userId);
@@ -95,7 +95,7 @@ public class InMemoryUserStorage implements UserStorage {
         return friends;
     }
 
-    @Override
+
     public List<User> getCommonFriendsList(Long userId, Long otherId) {
         List<User> commonFriends = new ArrayList<>();
         validateId(userId);

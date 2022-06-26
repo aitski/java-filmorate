@@ -78,7 +78,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
+    public User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
 
         User user = new User(
                 resultSet.getString("user_email"),
@@ -119,70 +119,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    @Override
-    public void addFriend(Long userId, Long friendId) {
-
-        System.out.println("addFriend " + userId + " " + friendId);
-
-        validateId(userId);
-        validateId(friendId);
-
-        String sqlQuery = "insert into friends (user_id, friend_id) " +
-                "values (?, ?)";
-        jdbcTemplate.update(sqlQuery, userId, friendId);
-        log.debug("user {} added {} to friends", userId, friendId);
-    }
-
-    @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        System.out.println("deleteFriend " + userId + " " + friendId);
-
-        String sqlQuery = "delete from friends where user_id = ? and friend_id = ?";
-        jdbcTemplate.update(sqlQuery, userId, friendId);
-        log.debug("user {} deleted {} from friends", userId, friendId);
-    }
-
-    @Override
-    public List<User> getFriendsList(Long userId) {
-        System.out.println("getFriendsList " + userId);
-
-        validateId(userId);
-
-        String sqlQuery =
-                "select u.*  " +
-                        "from friends as f " +
-                        "left join users as u on f.friend_id=u.user_id " +
-                        "where f.user_id=?";
-        List<User> list = jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
-        log.debug("list of friends returned: {}", list);
-        return list;
-    }
-
-    @Override
-    public List<User> getCommonFriendsList(Long userId, Long otherId) {
-        System.out.println("getCommonFriendsList " + userId);
-
-        validateId(userId);
-        validateId(otherId);
-
-        String sqlQuery =
-                "select * " +
-                        "from " +
-                        "(select u.*  " +
-                        "from friends as f " +
-                        "left join users as u on f.friend_id=u.user_id " +
-                        "where f.user_id=? " +
-                        "union all " +
-                        "select u.*  from friends as f " +
-                        "left join users as u on f.friend_id=u.user_id " +
-                        "where f.user_id=?) as common " +
-                        "group by common.USER_EMAIL, common.USER_LOGIN, common.USER_NAME, common.USER_BIRTHDAY " +
-                        "having count (common.user_ID)>1";
-        List<User> list = jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, otherId);
-        log.debug("list of common friends returned: {}", list);
-        return list;
-    }
-
     public void validateName(User user) {
 
         if (user.getName().isBlank()) {
@@ -205,14 +141,6 @@ public class UserDbStorage implements UserStorage {
 
         if (user.getLogin().contains(" ")) {
             Validation v = new Validation("login contains spaces");
-            log.debug(v.getMessage());
-            throw v;
-        }
-    }
-
-    public void validateId(Long userId) {
-        if (getById(userId) == null) {
-            ObjectNotFoundException v = new ObjectNotFoundException("user does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }

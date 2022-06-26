@@ -53,31 +53,5 @@ public class GenresDbStorage {
         }
     }
 
-    public Set<Genres> getByFilm(Long filmId) {
-        String sqlQuery = "select g.genre_id, g.genre_name " +
-                "from film_genres as f " +
-                "left join genres as g on g.genre_id = f.genre_id " +
-                "where f.FILM_ID=? order by g.genre_id asc";
-
-        Collection<Genres> list = jdbcTemplate.query(sqlQuery, this::rowToObject, filmId);
-        log.debug("list of Genres returned: {}", list);
-
-        if (list.isEmpty()) {
-            return new HashSet<>();
-        }
-        return new HashSet<>(list);
-    }
-
-    public void insertFilmIdToFilmGenres(Long filmId, Long genreId) {
-        String sql = "insert into film_genres (film_id, genre_id) " +
-                "values(?,?)";
-        jdbcTemplate.update(sql, filmId, genreId);
-    }
-
-    public void deleteFilmIdFomFilmGenres(Long filmId, Long genreId) {
-        String sql = "delete from film_genres where film_id=? and genre_id = ?;";
-        jdbcTemplate.update(sql, filmId, genreId);
-    }
-
 }
 
