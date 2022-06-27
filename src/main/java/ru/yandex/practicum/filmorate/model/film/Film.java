@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.*;
 
@@ -15,23 +15,29 @@ import java.util.Set;
 
 public class Film {
 
-    public static long counter=1;
+    public static long counter = 1;
     private long id;
     private Set<Long> likes = new HashSet<>();
     @NotBlank
     private String name;
     @NotBlank
-    @Size(max=200)
+    @Size(max = 200)
     private String description;
     private String releaseDate;
     @Positive
     private int duration;
+    Set<Genres> genres;
+    @NonNull
+    Mpa mpa;
+    int rate;
 
-    public Film(String name, String description, String releaseDate, int duration) {
+
+    public Film(String name, String description, String releaseDate, int duration, Mpa mpa, int rate) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
+        this.rate = rate;
     }
-
 }

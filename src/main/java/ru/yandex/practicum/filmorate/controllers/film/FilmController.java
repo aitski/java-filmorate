@@ -1,9 +1,10 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.controllers.film;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.controllers.Controller;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,12 +35,6 @@ public class FilmController extends Controller<Film> {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         return filmService.update(film);
-    }
-
-    @Override
-    @DeleteMapping
-    public void deleteAll() {
-        filmService.deleteAll();
     }
 
     @Override

@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -23,8 +23,7 @@ public class UserController extends Controller<User> {
     @Override
     @PostMapping
     public User save(@Valid @RequestBody User user) {
-
-        return userService.save(user);
+      return userService.save(user);
     }
 
     @Override
@@ -32,13 +31,6 @@ public class UserController extends Controller<User> {
     public User update(@Valid @RequestBody User user) {
 
         return userService.update(user);
-    }
-
-    @Override
-    @DeleteMapping
-    public void deleteAll() {
-        userService.deleteAll();
-
     }
 
     @Override

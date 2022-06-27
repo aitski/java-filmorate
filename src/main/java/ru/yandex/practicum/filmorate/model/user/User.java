@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
 import lombok.*;
 
 import javax.validation.constraints.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ public class User {
 
     public static long counter=1;
     private long id;
-    private Set<Long> friends = new HashSet<>();
+    private Map<Long, Status> friends = new HashMap<>();
     @NotBlank
     @Email
     private  String email;
@@ -31,4 +31,5 @@ public class User {
         this.name = name;
         this.birthday = birthday;
     }
+
 }

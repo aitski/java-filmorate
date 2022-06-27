@@ -2,11 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -14,19 +18,18 @@ import java.util.*;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, JdbcTemplate jdbcTemplate) {
         this.userStorage = userStorage;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public User save(User user){
         return userStorage.save(user);
     }
 
-    public void deleteAll(){
-        userStorage.deleteAll();
-    }
     public User update(User user){
         return userStorage.update(user);
     }
@@ -34,67 +37,88 @@ public class UserService {
         return userStorage.findAll();
     }
 
+    public User getById(Long id) {
+        return userStorage.getById(id);
+    }
+
     public void addFriend(Long userId, Long friendId) {
+
+        System.out.println("addFriend " + userId + " " + friendId);
+
         validateId(userId);
         validateId(friendId);
-        //add each other to Sets
-        getFriendsSet(userId).add(friendId);
-        getFriendsSet(friendId).add(userId);
+
+        String sqlQuery = "insert into friends (user_id, friend_id) " +
+                "values (?, ?)";
+        jdbcTemplate.update(sqlQuery, userId, friendId);
         log.debug("user {} added {} to friends", userId, friendId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
-        validateId(userId);
-        validateId(friendId);
-        getFriendsSet(userId).remove(friendId);
-        getFriendsSet(friendId).remove(userId);
+        System.out.println("deleteFriend " + userId + " " + friendId);
+
+        String sqlQuery = "delete from friends where user_id = ? and friend_id = ?";
+        jdbcTemplate.update(sqlQuery, userId, friendId);
         log.debug("user {} deleted {} from friends", userId, friendId);
     }
 
     public List<User> getFriendsList(Long userId) {
+        System.out.println("getFriendsList " + userId);
 
         validateId(userId);
-        Set<Long> friendsSet = getFriendsSet(userId);
-        List<User> friends = new ArrayList<>();
-        for (Long id : friendsSet) {
-            friends.add(userStorage.getUsers().get(id));
-        }
-        return friends;
+
+        String sqlQuery =
+                "select u.*  " +
+                        "from friends as f " +
+                        "left join users as u on f.friend_id=u.user_id " +
+                        "where f.user_id=?";
+        List<User> list = jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId);
+        log.debug("list of friends returned: {}", list);
+        return list;
     }
 
     public List<User> getCommonFriendsList(Long userId, Long otherId) {
+        System.out.println("getCommonFriendsList " + userId);
 
-        List<User> commonFriends = new ArrayList<>();
         validateId(userId);
         validateId(otherId);
-        Set<Long> userSet = getFriendsSet(userId);
-        Set<Long> otherSet = getFriendsSet(otherId);
 
-        for (Long id : userSet) {
-            if (otherSet.contains(id)) {
-                commonFriends.add(userStorage.getUsers().get(id));
-            }
-        }
-        return commonFriends;
+        String sqlQuery =
+                "select * " +
+                        "from " +
+                        "(select u.*  " +
+                        "from friends as f " +
+                        "left join users as u on f.friend_id=u.user_id " +
+                        "where f.user_id=? " +
+                        "union all " +
+                        "select u.*  from friends as f " +
+                        "left join users as u on f.friend_id=u.user_id " +
+                        "where f.user_id=?) as common " +
+                        "group by common.USER_EMAIL, common.USER_LOGIN, common.USER_NAME, common.USER_BIRTHDAY " +
+                        "having count (common.user_ID)>1";
+        List<User> list = jdbcTemplate.query(sqlQuery, this::mapRowToUser, userId, otherId);
+        log.debug("list of common friends returned: {}", list);
+        return list;
     }
 
-    public User getById(Long id) {
-        validateId(id);
-        return userStorage.getUsers().get(id);
-    }
-
-    public Set<Long> getFriendsSet(Long userId) {
-
-        User user = userStorage.getUsers().get(userId);
-        return user.getFriends();
-    }
-
-    public void validateId(Long id) {
-        if (!userStorage.getUsers().containsKey(id)) {
+    public void validateId(Long userId) {
+        if (getById(userId) == null) {
             ObjectNotFoundException v = new ObjectNotFoundException("user does not exist in database");
             log.debug(v.getMessage());
             throw v;
         }
     }
+
+    public User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
+
+        User user = new User(
+                resultSet.getString("user_email"),
+                resultSet.getString("user_login"),
+                resultSet.getString("user_name"),
+                resultSet.getString("user_birthday"));
+        user.setId(resultSet.getLong("user_id"));
+        return user;
+    }
+
 
 }

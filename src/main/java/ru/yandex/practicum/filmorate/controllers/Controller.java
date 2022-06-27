@@ -14,9 +14,6 @@ public abstract class Controller<T> {
     @PutMapping
     public abstract T update(@RequestBody T t);
 
-    @DeleteMapping
-    public abstract void deleteAll();
-
     @GetMapping
     public abstract List<T> findAll();
 }
